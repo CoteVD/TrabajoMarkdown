@@ -3,7 +3,7 @@ const Marked = require('marked');
 const fetch = require('node-fetch');
 const path = require('path');
 //const argv = require('yargs').argv;
-//const colors = require('colors');
+const colors = require('colors');
 
 // Función para extraer los links del archivo
 const mdlinks = function markdownLinkExtractor(markdown) {
@@ -66,7 +66,7 @@ fs.readdir(dir, (err, files) => {
               }
               console.log(array)
             })
-            .catch(err => console.log(err))
+            .catch(err => console.log(`El link ${element.href} está roto`.red))
         })
       })
     }
