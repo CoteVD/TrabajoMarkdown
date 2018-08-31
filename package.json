@@ -1,5 +1,5 @@
 {
-  "name": "md-links",
+  "name": "md-links-mjvd",
   "version": "0.0.1",
   "description": "Corroborar si los links de los archivos markdown están caídos u OK",
   "main": "index.js",
