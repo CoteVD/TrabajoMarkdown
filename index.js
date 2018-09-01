@@ -51,10 +51,10 @@ const mdlinks = function markdownLinkExtractor(markdown) {
 let dir = process.cwd();
 
 // Para dar la opción del validate, hay que rescatar el comando que pone el usuario
-let argv2 = process.argv;
-let val = argv[2];
-
-validateLink()
+//let argv2 = process.argv;
+//let val = argv[2];
+//
+//validateLink()
 
 // Lee el contenido del directorio
 fs.readdir(dir, (err, files) => {
@@ -72,15 +72,17 @@ fs.readdir(dir, (err, files) => {
               let array = {
                 link: answer.url,
                 text: element.text,
-                title: file,
-                status: answer.status
+                title: file
               }
-              console.log(array.link, array.text, array.title, array.status)
+              console.log(`LINK: ${array.link}`.underline.cyan, `TEXT: ${array.text}`, `TITLE: ${array.title}`.yellow)
             })
-            .catch(err => console.log(`El link ${element.href} está roto`.red))
+            .catch(err => console.log(`El link ${element.href} está roto o no existe`.red))
         })
       })
     }
   })
 })
 
+module.exports = {
+  
+}
