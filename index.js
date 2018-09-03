@@ -54,22 +54,27 @@ let dir = process.cwd();
 //let argv2 = process.argv;
 //let val = argv[2];
 
+// Lee el contenido del directorio
 fs.readdir(dir, (err, files) => {
   if (err) throw err;
   return files.forEach(file => {
     // Sólo seleccionamos los archivos con la extensión .md
     if (path.extname(file) === '.md') {
-      // Nos metemos en éstos archivos
+      // Nos metemos en éstos archivos y leemos cada uno, toda la información se guarda en data
       fs.readFile(file, 'utf-8', (err, data) => {
         if (err) throw err;
-        // Retorna un array de objetos
+        // La función mdlinks extrae de data cada uno de los links y me los devuelve en objetos que guardo en element
         return mdlinks(data).forEach(element => {
+          // Se hace un fetch con los links para ver si hay respuesta o no
           fetch(`${element.href}`)
+            // Se extrae de la respuesta el status para ver si es 200 (funciona) o no (está roto)
             .then(answer => {
+              // Caso de link responsivo (success)
               if (answer.status === 200) {
                 console.log(`${element.href}`, 'OK'.green)
               }
             })
+            // Caso de link roto
             .catch((err) => console.log(`${element.href}`, 'BROKEN'.red))
         })
       })
@@ -83,21 +88,24 @@ fs.readdir(dir, (err, files) => {
   return files.forEach(file => {
     // Sólo seleccionamos los archivos con la extensión .md
     if (path.extname(file) === '.md') {
-      // Nos metemos en éstos archivos
+      // Nos metemos en éstos archivos y leemos cada uno, toda la información se guarda en data
       fs.readFile(file, 'utf-8', (err, data) => {
-        //console.log(data)
         if (err) throw err;
-        // Retorna un array de objetos
+        // La función mdlinks extrae de data cada uno de los links y me los devuelve en objetos que guardo en element
         return mdlinks(data).forEach(element => {
+          // Se hace un fetch con los links para obtener información sobre la url
           fetch(`${element.href}`)
             .then((answer) => {
+              // Se guarda la información obtenida de answer en un objeto para poder imprimirla más abajo 
               let obj = {
                 link: answer.url,
                 text: element.text,
                 title: file
               }
+              // Caso de link que existe y funciona
               console.log(`LINK: ${obj.link}`.underline.cyan, `TEXT: ${obj.text}`, `TITLE: ${obj.title}`.yellow)
             })
+            // Caso de link roto
             .catch(err => console.log(`El link ${element.href} está roto o no existe`.red))
         })
       })
