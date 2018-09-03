@@ -53,10 +53,7 @@ let dir = process.cwd();
 // Para dar la opción del validate, hay que rescatar el comando que pone el usuario
 //let argv2 = process.argv;
 //let val = argv[2];
-//
-//validateLink()
 
-// Lee el contenido del directorio
 fs.readdir(dir, (err, files) => {
   if (err) throw err;
   return files.forEach(file => {
@@ -68,13 +65,38 @@ fs.readdir(dir, (err, files) => {
         // Retorna un array de objetos
         return mdlinks(data).forEach(element => {
           fetch(`${element.href}`)
+            .then(answer => {
+              if (answer.status === 200) {
+                console.log(`${element.href}`, 'OK'.green)
+              }
+            })
+            .catch((err) => console.log(`${element.href}`, 'BROKEN'.red))
+        })
+      })
+    }
+  })
+})
+
+// Lee el contenido del directorio
+fs.readdir(dir, (err, files) => {
+  if (err) throw err;
+  return files.forEach(file => {
+    // Sólo seleccionamos los archivos con la extensión .md
+    if (path.extname(file) === '.md') {
+      // Nos metemos en éstos archivos
+      fs.readFile(file, 'utf-8', (err, data) => {
+        //console.log(data)
+        if (err) throw err;
+        // Retorna un array de objetos
+        return mdlinks(data).forEach(element => {
+          fetch(`${element.href}`)
             .then((answer) => {
-              let array = {
+              let obj = {
                 link: answer.url,
                 text: element.text,
                 title: file
               }
-              console.log(`LINK: ${array.link}`.underline.cyan, `TEXT: ${array.text}`, `TITLE: ${array.title}`.yellow)
+              console.log(`LINK: ${obj.link}`.underline.cyan, `TEXT: ${obj.text}`, `TITLE: ${obj.title}`.yellow)
             })
             .catch(err => console.log(`El link ${element.href} está roto o no existe`.red))
         })
@@ -84,5 +106,5 @@ fs.readdir(dir, (err, files) => {
 })
 
 module.exports = {
-  
+
 }
